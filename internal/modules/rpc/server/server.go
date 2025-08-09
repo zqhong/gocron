@@ -17,7 +17,9 @@ import (
 	"google.golang.org/grpc/keepalive"
 )
 
-type Server struct{}
+type Server struct {
+	pb.UnimplementedTaskServer
+}
 
 var keepAlivePolicy = keepalive.EnforcementPolicy{
 	MinTime:             10 * time.Second,

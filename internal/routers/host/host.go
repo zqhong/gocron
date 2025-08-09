@@ -182,7 +182,7 @@ func Ping(ctx *macaron.Context) string {
 		return json.CommonFailure("主机不存在", err)
 	}
 
-	taskReq := &rpc.TaskRequest{}
+	taskReq := &proto.TaskRequest{}
 	taskReq.Command = testConnectionCommand
 	taskReq.Timeout = testConnectionTimeout
 	output, err := client.Exec(hostModel.Name, hostModel.Port, taskReq)

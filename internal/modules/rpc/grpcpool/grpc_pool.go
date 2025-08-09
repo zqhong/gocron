@@ -2,13 +2,13 @@ package grpcpool
 
 import (
 	"context"
+	"github.com/ouqiang/gocron/internal/modules/rpc/proto"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/ouqiang/gocron/internal/modules/app"
 	"github.com/ouqiang/gocron/internal/modules/rpc/auth"
-	"github.com/ouqiang/gocron/internal/modules/rpc/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 )
@@ -32,7 +32,7 @@ var (
 
 type Client struct {
 	conn      *grpc.ClientConn
-	rpcClient rpc.TaskClient
+	rpcClient proto.TaskClient
 }
 
 type GRPCPool struct {
@@ -41,7 +41,7 @@ type GRPCPool struct {
 	mu    sync.RWMutex
 }
 
-func (p *GRPCPool) Get(addr string) (rpc.TaskClient, error) {
+func (p *GRPCPool) Get(addr string) (proto.TaskClient, error) {
 	p.mu.RLock()
 	client, ok := p.conns[addr]
 	p.mu.RUnlock()
@@ -111,7 +111,7 @@ func (p *GRPCPool) factory(addr string) (*Client, error) {
 
 	client = &Client{
 		conn:      conn,
-		rpcClient: rpc.NewTaskClient(conn),
+		rpcClient: proto.NewTaskClient(conn),
 	}
 
 	p.conns[addr] = client
