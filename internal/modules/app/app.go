@@ -102,19 +102,34 @@ func GetCurrentVersionId() int {
 	return versionId
 }
 
-// ToNumberVersion 把字符串版本号a.b.c转换为整数版本号abc
+// ToNumberVersion 把字符串版本号 a.b.c[-...] 转换为整数版本号 abc
 func ToNumberVersion(versionString string) int {
+	// 去掉前缀 v
 	versionString = strings.TrimPrefix(versionString, "v")
-	v := strings.Replace(versionString, ".", "", -1)
-	if len(v) < 3 {
-		v += "0"
+
+	// 拆掉可能的后缀, 比如 -beta1
+	if idx := strings.Index(versionString, "-"); idx != -1 {
+		versionString = versionString[:idx]
 	}
+
+	// 按点分割
+	segments := strings.Split(versionString, ".")
+
+	// 补齐到3段
+	for len(segments) < 3 {
+		segments = append(segments, "0")
+	}
+
+	// 只保留前三段
+	segments = segments[:3]
+
+	// 拼接为 abc
+	v := strings.Join(segments, "")
 
 	versionId, err := strconv.Atoi(v)
 	if err != nil {
 		logger.Fatal(err)
 	}
-
 	return versionId
 }
 
