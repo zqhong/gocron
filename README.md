@@ -6,6 +6,39 @@
 # 项目简介
 使用Go语言开发的轻量级定时任务集中调度和管理系统, 用于替代Linux-crontab
 
+## fork 说明
+
+原来的项目没人维护了，我自己有在使用，所以 fork 维护。
+下面这些问题，有时间处理。
+
+### 1. [Bug] 前端 XSS 漏洞
+
+- Issue: https://github.com/ouqiang/gocron/issues/362
+- 文件: `web/vue/src/pages/taskLog/list.vue:91`
+- 问题: host 字段被浏览器解析为 HTML，可注入恶意脚本
+- 优先级: **高**（安全问题）
+
+### 2. [Bug] utf8mb4 字符集问题导致任务卡在"执行中"
+
+- Issue: https://github.com/ouqiang/gocron/issues/318
+- 问题: 执行结果含 emoji 等 4 字节 UTF-8 字符时，MySQL utf8 字符集无法存储，任务状态永远无法更新
+- 修复方向: 数据库初始化脚本改为 utf8mb4
+- 优先级: **高**（影响可用性）
+
+### 3. [Feature] 兼容 JSON 格式 POST 请求参数
+
+- PR: https://github.com/ouqiang/gocron/pull/388
+- 改动: +8/-1，改动极小
+- 说明: HTTP POST 任务支持 JSON body，格式 `http://url?{"hello":"world"}`
+- 优先级: 中
+
+### 4. [Feature] MySQL TLS 连接支持
+
+- PR: https://github.com/ouqiang/gocron/pull/343
+- 改动: +206/-29
+- 说明: 支持通过 TLS 加密连接 MySQL，适用于远程数据库场景
+- 优先级: 中（按需）
+
 ## 功能特性
 * Web界面管理定时任务
 * crontab时间表达式, 精确到秒
